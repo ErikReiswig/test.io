@@ -4,11 +4,10 @@ var startTime, timeOut,
 SPACE_CODE = 32,
 E_CODE = 101,
 THOUSAND = 1000;
-let circle,
-times,
+let times,
 result,
 arrayOfTimes = [];
-hasChanged = false;
+hasPeeped = false;
 var startButton;
 var trialCounter = 0;
 var trials = 10;
@@ -22,10 +21,10 @@ function init(){
     description = document.getElementById("description");
 }
 
-//experiment is started when the start button is clicked
+//is getting called when the Start Button is clicked
 function startExperiment(){
     resetTest();
-    timeOut = setTimeout(changeColor, getRandomTime());
+    timeOut = setTimeout(playSound, getRandomTime());
     startButton.classList.add("disabled");
 }
 
@@ -37,32 +36,32 @@ function getRandomTime(){
     return rand * THOUSAND;
 }
 
-function changeColor(){
-    circle = document.getElementById("circle");
-    circle.style.background = "orange";
+function playSound(){
+    //sound from: https://www.youtube.com/audiolibrary/soundeffects?ar=1587363065099&nv=1
+    var audio = new Audio("Beep_Short.mp3");
+    audio.play();
     startTime = new Date(); 
-    hasChanged = true;
+    hasPeeped = true;
 }
 
-//key events triggered
+//key events caught
 function onKeyPressed(e){
     var neededTime;
     if (e.repeat) { return }
-    if(e.keyCode === SPACE_CODE && hasChanged === true){
-    	trialCounter++;
+    if(e.keyCode === SPACE_CODE && hasPeeped === true){
         let endtime = new Date();
+        trialCounter++;
         neededTime = endtime - startTime;
         arrayOfTimes.push(neededTime);
+    	hasPeeped = false;
         result.classList.remove("hidden");
         result.innerHTML = neededTime + "ms";
-        resetBackground();
-        timeOut = setTimeout(changeColor, getRandomTime());
-    }
+        timeOut = setTimeout(playSound, getRandomTime());
+    } 
     if(trialCounter == trials){
-    	//result.innerHTML = "Mean: " + countMean() + "ms";
-        resetBackground();
-        clearTimeout(timeOut);
+        //result.innerHTML = "Mean: " + countMean() + "ms";
         showResults();
+        clearTimeout(timeOut);
         document.removeEventListener("keydown", onKeyPressed);
     }
     
@@ -86,12 +85,6 @@ function resetTest(){
     description.style.visibility = "hidden";
 }
 
-//circle color set back to blue
-function resetBackground(){
-    circle.style.background = "#00b0f0";
-    hasChanged = false;
-}
-
 //show reaction times for user
 function showResults(){
     let finalTimes = "", i;
@@ -109,7 +102,7 @@ function showResults(){
 //csv file is created and ready to download
 function saveToCsv(){
 	var encodedUri, link;
-	let csvContent = "data:text/csv;charset=utf-8,Reaction times in ms (visual)\n";
+	let csvContent = "data:text/csv;charset=utf-8,Reaction times in ms (acoustic)\n";
 	arrayOfTimes.forEach(function (infoArray) {
 		let row = infoArray + ",";
         csvContent += row + "\r\n";
@@ -118,7 +111,7 @@ function saveToCsv(){
 	
 	link = document.createElement("a");
 	link.setAttribute("href", encodedUri);
-	link.setAttribute("download", "resultsVisual.csv");
+	link.setAttribute("download", "resultsAcoustic.csv");
 	document.body.appendChild(link);
 	link.click();
 }

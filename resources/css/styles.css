@@ -44,17 +44,12 @@ header h1 {
     font-size: 1.5em;
 }
 
-#circle {
+#image {
     position: relative;
     width: 25vw;
     height: 25vw;
     margin: 0 auto;
-    border-radius: 50%;
-    border-width: 0.5vw;
-    border-style: solid;
-    border-color: rgb(88, 88, 88);
     padding: 2vw 2vw;
-    background: #00b0f0;
 }
 
 .hidden {
@@ -91,9 +86,10 @@ header h1 {
 	list-style-type: none;
 }
 
-
 .disabled{
 	pointer-events: none;
 	color: #c0c0c0;
     background-color: #ffffff;
 }
+
+
